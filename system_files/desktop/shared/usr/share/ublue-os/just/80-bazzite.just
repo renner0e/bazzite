@@ -11,7 +11,7 @@ _install-system-flatpaks:
         FLATPAKS="kde_flatpaks/flatpaks"
     fi
     FLATPAK_LIST="$(curl https://raw.githubusercontent.com/ublue-os/bazzite/main/installer/${FLATPAKS} | tr '\n' ' ')"
-    flatpak --system -y install --reinstall --or-update ${FLATPAK_LIST}
+    flatpak --system -y install flathub --reinstall --or-update ${FLATPAK_LIST}
 
 # Toggle SSH availability on boot
 toggle-ssh:
