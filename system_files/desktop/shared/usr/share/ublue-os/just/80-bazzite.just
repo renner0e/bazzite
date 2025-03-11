@@ -13,6 +13,28 @@ _install-system-flatpaks:
     FLATPAK_LIST="$(curl https://raw.githubusercontent.com/ublue-os/bazzite/main/installer/${FLATPAKS} | tr '\n' ' ')"
     flatpak --system -y install flathub --reinstall --or-update ${FLATPAK_LIST}
 
+    # check if Fedora Flatpaks Remote exists and replace those Applications from Flathub
+    if flatpak remotes | grep -q "fedora"; then
+      echo "⚠️ Fedora Flatpak Remotes in use ⚠️ , replacing Fedora Flatpak Applications from Flathub ✅"
+
+      # get list of Fedora Flatpaks without the Fedora Runtimes
+      FEDORA_FLATPAK_LIST="$(flatpak list --columns=app,origin | grep -Po '^\S*(?=\s+fedora)' | grep -v "org\.fedoraproject\..*Platform" | tr "\n" " ")"
+      # delete the Remote if nothing is installed from Fedora, avoids accepting Flathub as an Application name
+      if [ -z "$FEDORA_FLATPAK_LIST" ]; then
+        flatpak remote-delete fedora
+      else
+        flatpak install --system flathub -y --reinstall ${FEDORA_FLATPAK_LIST}
+      fi
+      # explicitly reinstall Applications from Flathub
+
+      # remove leftover Fedora Runtimes
+      flatpak uninstall --unused -y
+
+      echo "Removing Fedora Flatpak Remote"
+      flatpak remote-delete fedora
+    fi
+
+
 # Toggle SSH availability on boot
 toggle-ssh:
     #!/usr/bin/bash
