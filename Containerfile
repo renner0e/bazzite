@@ -229,7 +229,6 @@ RUN --mount=type=cache,dst=/var/cache \
         bazzite-updater \
         ScopeBuddy \
         twitter-twemoji-fonts \
-        google-noto-sans-cjk-fonts \
         lato-fonts \
         fira-code-fonts \
         nerd-fonts \
